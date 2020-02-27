@@ -113,6 +113,11 @@ class JetInfoBranches {
     int   Jet_histSvx[nMaxJets_];
     int   Jet_ntracks[nMaxJets_];
     int   Jet_nseltracks[nMaxJets_];
+//$$
+    int   Jet_timeNtk[nMaxJets_];
+    float Jet_time[nMaxJets_];
+    float Jet_timeWeight[nMaxJets_];
+//$$
     int   Jet_flavour[nMaxJets_];	
     int   Jet_flavourCleaned[nMaxJets_];
     int   Jet_partonFlavour[nMaxJets_];
@@ -223,6 +228,10 @@ class JetInfoBranches {
     float Track_eta[nMaxTrk_];
     float Track_phi[nMaxTrk_];
     float Track_chi2[nMaxTrk_];
+//$$
+    float Track_time[nMaxTrk_];    
+    float Track_timeError[nMaxTrk_];    
+//$$
     int   Track_charge[nMaxTrk_];
     int   Track_history[nMaxTrk_];
     int   Track_nHitStrip[nMaxTrk_];
@@ -385,6 +394,11 @@ class JetInfoBranches {
     float TagVar_vertexMass[nMaxSVs_];
     float TagVar_vertexNTracks[nMaxSVs_];
     float TagVar_vertexJetDeltaR[nMaxSVs_];
+//$$
+    int   TagVar_vertex_timeNtk[nMaxSVs_];
+    float TagVar_vertex_time[nMaxSVs_];
+    float TagVar_vertex_timeWeight[nMaxSVs_];
+//$$
     float TagVar_flightDistance2dVal[nMaxSVs_];
     float TagVar_flightDistance2dSig[nMaxSVs_];
     float TagVar_flightDistance3dVal[nMaxSVs_];
@@ -421,6 +435,11 @@ class JetInfoBranches {
     float TagVarCSV_vertexNTracks[nMaxJets_];
     float TagVarCSV_vertexEnergyRatio[nMaxJets_];
     float TagVarCSV_vertexJetDeltaR[nMaxJets_];
+//$$
+    int   TagVarCSV_vertex_timeNtk[nMaxJets_];
+    float TagVarCSV_vertex_time[nMaxJets_];
+    float TagVarCSV_vertex_timeWeight[nMaxJets_];
+//$$
     float TagVarCSV_flightDistance2dVal[nMaxJets_];
     float TagVarCSV_flightDistance2dSig[nMaxJets_];
     float TagVarCSV_flightDistance3dVal[nMaxJets_];
@@ -514,6 +533,11 @@ class JetInfoBranches {
       if(variableParser.isToBeStored(name+"Jet_mass")) tree->Branch((name+"Jet_mass").c_str(),        Jet_mass        ,(name+"Jet_mass["+name+"nJet]/F").c_str());
       if(variableParser.isToBeStored(name+"Jet_ntracks")) tree->Branch((name+"Jet_ntracks").c_str(),     Jet_ntracks     ,(name+"Jet_ntracks["+name+"nJet]/I").c_str());
       if(variableParser.isToBeStored(name+"Jet_nseltracks")) tree->Branch((name+"Jet_nseltracks").c_str(),  Jet_nseltracks  ,(name+"Jet_nseltracks["+name+"nJet]/I").c_str());
+//$$
+      if(variableParser.isToBeStored(name+"Jet_timeNtk")) tree->Branch((name+"Jet_timeNtk").c_str(),  Jet_timeNtk  ,(name+"Jet_timeNtk["+name+"nJet]/I").c_str());
+      if(variableParser.isToBeStored(name+"Jet_time")) tree->Branch((name+"Jet_time").c_str(),  Jet_time  ,(name+"Jet_time["+name+"nJet]/F").c_str());
+      if(variableParser.isToBeStored(name+"Jet_timeWeight")) tree->Branch((name+"Jet_timeWeight").c_str(),  Jet_timeWeight  ,(name+"Jet_timeWeight["+name+"nJet]/F").c_str());
+//$$
       if(variableParser.isToBeStored(name+"Jet_flavour")) tree->Branch((name+"Jet_flavour").c_str(),     Jet_flavour     ,(name+"Jet_flavour["+name+"nJet]/I").c_str());
       if(variableParser.isToBeStored(name+"Jet_flavourCleaned")) tree->Branch((name+"Jet_flavourCleaned").c_str(), Jet_flavourCleaned, (name+"Jet_flavourCleaned["+name+"nJet]/I").c_str());
       if(variableParser.isToBeStored(name+"Jet_partonFlavour")) tree->Branch((name+"Jet_partonFlavour").c_str(), Jet_partonFlavour, (name+"Jet_partonFlavour["+name+"nJet]/I").c_str());
@@ -721,6 +745,10 @@ class JetInfoBranches {
       if(variableParser.isToBeStored(name+"Track_eta")) tree->Branch((name+"Track_eta").c_str()        ,Track_eta             ,(name+"Track_eta["+name+"nTrack]/F").c_str());
       if(variableParser.isToBeStored(name+"Track_phi")) tree->Branch((name+"Track_phi").c_str()        ,Track_phi             ,(name+"Track_phi["+name+"nTrack]/F").c_str());
       if(variableParser.isToBeStored(name+"Track_chi2")) tree->Branch((name+"Track_chi2").c_str()       ,Track_chi2            ,(name+"Track_chi2["+name+"nTrack]/F").c_str());
+//$$
+      if(variableParser.isToBeStored(name+"Track_time"))      tree->Branch((name+"Track_time").c_str()      ,Track_time      ,(name+"Track_time["+name+"nTrack]/F").c_str());
+      if(variableParser.isToBeStored(name+"Track_timeError")) tree->Branch((name+"Track_timeError").c_str() ,Track_timeError ,(name+"Track_timeError["+name+"nTrack]/F").c_str());
+//$$
       if(variableParser.isToBeStored(name+"Track_charge")) tree->Branch((name+"Track_charge").c_str()     ,Track_charge     ,(name+"Track_charge["+name+"nTrack]/I").c_str());
       if(variableParser.isToBeStored(name+"Track_history")) tree->Branch((name+"Track_history").c_str()    ,Track_history    ,(name+"Track_history["+name+"nTrack]/I").c_str());
       if(variableParser.isToBeStored(name+"Track_nHitStrip")) tree->Branch((name+"Track_nHitStrip").c_str()  ,Track_nHitStrip  ,(name+"Track_nHitStrip["+name+"nTrack]/I").c_str());
@@ -831,6 +859,11 @@ class JetInfoBranches {
       if(variableParser.isToBeStored(name+"TagVar_vertexMass")) tree->Branch((name+"TagVar_vertexMass").c_str()               ,TagVar_vertexMass               ,(name+"TagVar_vertexMass["+name+"nSVTagVar]/F").c_str()          );
       if(variableParser.isToBeStored(name+"TagVar_vertexNTracks")) tree->Branch((name+"TagVar_vertexNTracks").c_str()            ,TagVar_vertexNTracks            ,(name+"TagVar_vertexNTracks["+name+"nSVTagVar]/F").c_str()       );
       if(variableParser.isToBeStored(name+"TagVar_vertexJetDeltaR")) tree->Branch((name+"TagVar_vertexJetDeltaR").c_str()          ,TagVar_vertexJetDeltaR          ,(name+"TagVar_vertexJetDeltaR["+name+"nSVTagVar]/F").c_str()     );
+//$$
+      if(variableParser.isToBeStored(name+"TagVar_vertex_timeNtk")) tree->Branch((name+"TagVar_vertex_timeNtk").c_str()          ,TagVar_vertex_timeNtk          ,(name+"TagVar_vertex_timeNtk["+name+"nSVTagVar]/I").c_str()     );
+      if(variableParser.isToBeStored(name+"TagVar_vertex_time")) tree->Branch((name+"TagVar_vertex_time").c_str()          ,TagVar_vertex_time          ,(name+"TagVar_vertex_time["+name+"nSVTagVar]/F").c_str()     );
+      if(variableParser.isToBeStored(name+"TagVar_vertex_timeWeight")) tree->Branch((name+"TagVar_vertex_timeWeight").c_str()    ,TagVar_vertex_timeWeight       ,(name+"TagVar_vertex_timeWeight["+name+"nSVTagVar]/F").c_str()     );
+//$$
       if(variableParser.isToBeStored(name+"TagVar_flightDistance2dVal")) tree->Branch((name+"TagVar_flightDistance2dVal").c_str()      ,TagVar_flightDistance2dVal      ,(name+"TagVar_flightDistance2dVal["+name+"nSVTagVar]/F").c_str() );
       if(variableParser.isToBeStored(name+"TagVar_flightDistance2dSig")) tree->Branch((name+"TagVar_flightDistance2dSig").c_str()      ,TagVar_flightDistance2dSig      ,(name+"TagVar_flightDistance2dSig["+name+"nSVTagVar]/F").c_str() );
       if(variableParser.isToBeStored(name+"TagVar_flightDistance3dVal")) tree->Branch((name+"TagVar_flightDistance3dVal").c_str()      ,TagVar_flightDistance3dVal      ,(name+"TagVar_flightDistance3dVal["+name+"nSVTagVar]/F").c_str() );
@@ -867,6 +900,11 @@ class JetInfoBranches {
       if(variableParser.isToBeStored(name+"TagVarCSV_vertexNTracks")) tree->Branch((name+"TagVarCSV_vertexNTracks").c_str()            ,TagVarCSV_vertexNTracks            ,(name+"TagVarCSV_vertexNTracks["+name+"nJet]/F").c_str()           );
       if(variableParser.isToBeStored(name+"TagVarCSV_vertexEnergyRatio")) tree->Branch((name+"TagVarCSV_vertexEnergyRatio").c_str()        ,TagVarCSV_vertexEnergyRatio        ,(name+"TagVarCSV_vertexEnergyRatio["+name+"nJet]/F").c_str()       );
       if(variableParser.isToBeStored(name+"TagVarCSV_vertexJetDeltaR")) tree->Branch((name+"TagVarCSV_vertexJetDeltaR").c_str()          ,TagVarCSV_vertexJetDeltaR          ,(name+"TagVarCSV_vertexJetDeltaR["+name+"nJet]/F").c_str()         );
+//$$
+      if(variableParser.isToBeStored(name+"TagVarCSV_vertex_timeNtk")) tree->Branch((name+"TagVarCSV_vertex_timeNtk").c_str()          ,TagVarCSV_vertex_timeNtk          ,(name+"TagVarCSV_vertex_timeNtk["+name+"nJet]/I").c_str()         );
+      if(variableParser.isToBeStored(name+"TagVarCSV_vertex_time")) tree->Branch((name+"TagVarCSV_vertex_time").c_str()          ,TagVarCSV_vertex_time          ,(name+"TagVarCSV_vertex_time["+name+"nJet]/F").c_str()         );
+      if(variableParser.isToBeStored(name+"TagVarCSV_vertex_timeWeight")) tree->Branch((name+"TagVarCSV_vertex_timeWeight").c_str()          ,TagVarCSV_vertex_timeWeight          ,(name+"TagVarCSV_vertex_timeWeight["+name+"nJet]/F").c_str()         );
+//$$
       if(variableParser.isToBeStored(name+"TagVarCSV_flightDistance2dVal")) tree->Branch((name+"TagVarCSV_flightDistance2dVal").c_str()      ,TagVarCSV_flightDistance2dVal      ,(name+"TagVarCSV_flightDistance2dVal["+name+"nJet]/F").c_str()     );
       if(variableParser.isToBeStored(name+"TagVarCSV_flightDistance2dSig")) tree->Branch((name+"TagVarCSV_flightDistance2dSig").c_str()      ,TagVarCSV_flightDistance2dSig      ,(name+"TagVarCSV_flightDistance2dSig["+name+"nJet]/F").c_str()     );
       if(variableParser.isToBeStored(name+"TagVarCSV_flightDistance3dVal")) tree->Branch((name+"TagVarCSV_flightDistance3dVal").c_str()      ,TagVarCSV_flightDistance3dVal      ,(name+"TagVarCSV_flightDistance3dVal["+name+"nJet]/F").c_str()     );
@@ -1035,6 +1073,11 @@ class JetInfoBranches {
       if(variableParser.isToBeStored(name+"Jet_mass")) tree->SetBranchAddress((name+"Jet_mass").c_str(),        Jet_mass        );
       if(variableParser.isToBeStored(name+"Jet_ntracks")) tree->SetBranchAddress((name+"Jet_ntracks").c_str(),     Jet_ntracks     );
       if(variableParser.isToBeStored(name+"Jet_nseltracks")) tree->SetBranchAddress((name+"Jet_nseltracks").c_str(),  Jet_nseltracks  );
+//$$
+      if(variableParser.isToBeStored(name+"Jet_timeNtk")) tree->SetBranchAddress((name+"Jet_timeNtk").c_str(),  Jet_timeNtk  );
+      if(variableParser.isToBeStored(name+"Jet_time")) tree->SetBranchAddress((name+"Jet_time").c_str(),  Jet_time  );
+      if(variableParser.isToBeStored(name+"Jet_timeWeight")) tree->SetBranchAddress((name+"Jet_timeWeight").c_str(),  Jet_timeWeight  );
+//$$
       if(variableParser.isToBeStored(name+"Jet_flavour")) tree->SetBranchAddress((name+"Jet_flavour").c_str(),     Jet_flavour     );
       if(variableParser.isToBeStored(name+"Jet_flavourCleaned")) tree->SetBranchAddress((name+"Jet_flavourCleaned").c_str(), Jet_flavourCleaned);
       if(variableParser.isToBeStored(name+"Jet_partonFlavour")) tree->SetBranchAddress((name+"Jet_partonFlavour").c_str(), Jet_partonFlavour);
@@ -1242,6 +1285,10 @@ class JetInfoBranches {
       if(variableParser.isToBeStored(name+"Track_eta")) tree->SetBranchAddress((name+"Track_eta").c_str()        ,Track_eta             );
       if(variableParser.isToBeStored(name+"Track_phi")) tree->SetBranchAddress((name+"Track_phi").c_str()        ,Track_phi             );
       if(variableParser.isToBeStored(name+"Track_chi2")) tree->SetBranchAddress((name+"Track_chi2").c_str()       ,Track_chi2            );
+//$$
+      if(variableParser.isToBeStored(name+"Track_time"))      tree->SetBranchAddress((name+"Track_time").c_str()      ,Track_time );
+      if(variableParser.isToBeStored(name+"Track_timeError")) tree->SetBranchAddress((name+"Track_timeError").c_str() ,Track_timeError );
+//$$
       if(variableParser.isToBeStored(name+"Track_charge")) tree->SetBranchAddress((name+"Track_charge").c_str()     ,Track_charge     );
       if(variableParser.isToBeStored(name+"Track_history")) tree->SetBranchAddress((name+"Track_history").c_str()    ,Track_history    );
       if(variableParser.isToBeStored(name+"Track_nHitStrip")) tree->SetBranchAddress((name+"Track_nHitStrip").c_str()  ,Track_nHitStrip  );
@@ -1348,10 +1395,15 @@ class JetInfoBranches {
       if(variableParser.isToBeStored(name+"TagVar_trackNTotalHits")) tree->SetBranchAddress((name+"TagVar_trackNTotalHits").c_str()   ,TagVar_trackNTotalHits     );
       if(variableParser.isToBeStored(name+"TagVar_trackNPixelHits")) tree->SetBranchAddress((name+"TagVar_trackNPixelHits").c_str()   ,TagVar_trackNPixelHits     );
 
-      if(variableParser.isToBeStored(name+"nSVTagVar")) tree->SetBranchAddress((name+"nSVTagVar").c_str()                       ,&nSVTagVar                                                           );
+      if(variableParser.isToBeStored(name+"nSVTagVar")) tree->SetBranchAddress((name+"nSVTagVar").c_str()                       ,&nSVTagVar                                        );
       if(variableParser.isToBeStored(name+"TagVar_vertexMass")) tree->SetBranchAddress((name+"TagVar_vertexMass").c_str()               ,TagVar_vertexMass                         );
       if(variableParser.isToBeStored(name+"TagVar_vertexNTracks")) tree->SetBranchAddress((name+"TagVar_vertexNTracks").c_str()            ,TagVar_vertexNTracks                   );
       if(variableParser.isToBeStored(name+"TagVar_vertexJetDeltaR")) tree->SetBranchAddress((name+"TagVar_vertexJetDeltaR").c_str()          ,TagVar_vertexJetDeltaR               );
+//$$
+      if(variableParser.isToBeStored(name+"TagVar_vertex_timeNtk")) tree->SetBranchAddress((name+"TagVar_vertex_timeNtk").c_str()          ,TagVar_vertex_timeNtk               );
+      if(variableParser.isToBeStored(name+"TagVar_vertex_time")) tree->SetBranchAddress((name+"TagVar_vertex_time").c_str()          ,TagVar_vertex_time               );
+      if(variableParser.isToBeStored(name+"TagVar_vertex_timeWeight")) tree->SetBranchAddress((name+"TagVar_vertex_timeWeight").c_str()          ,TagVar_vertex_timeWeight      );
+//$$
       if(variableParser.isToBeStored(name+"TagVar_flightDistance2dVal")) tree->SetBranchAddress((name+"TagVar_flightDistance2dVal").c_str()      ,TagVar_flightDistance2dVal       );
       if(variableParser.isToBeStored(name+"TagVar_flightDistance2dSig")) tree->SetBranchAddress((name+"TagVar_flightDistance2dSig").c_str()      ,TagVar_flightDistance2dSig       );
       if(variableParser.isToBeStored(name+"TagVar_flightDistance3dVal")) tree->SetBranchAddress((name+"TagVar_flightDistance3dVal").c_str()      ,TagVar_flightDistance3dVal       );
@@ -1388,6 +1440,11 @@ class JetInfoBranches {
       if(variableParser.isToBeStored(name+"TagVarCSV_vertexNTracks")) tree->SetBranchAddress((name+"TagVarCSV_vertexNTracks").c_str()            ,TagVarCSV_vertexNTracks                       );
       if(variableParser.isToBeStored(name+"TagVarCSV_vertexEnergyRatio")) tree->SetBranchAddress((name+"TagVarCSV_vertexEnergyRatio").c_str()        ,TagVarCSV_vertexEnergyRatio               );
       if(variableParser.isToBeStored(name+"TagVarCSV_vertexJetDeltaR")) tree->SetBranchAddress((name+"TagVarCSV_vertexJetDeltaR").c_str()          ,TagVarCSV_vertexJetDeltaR                   );
+//$$
+      if(variableParser.isToBeStored(name+"TagVarCSV_vertex_timeNtk")) tree->SetBranchAddress((name+"TagVarCSV_vertex_timeNtk").c_str()          ,TagVarCSV_vertex_timeNtk                   );
+      if(variableParser.isToBeStored(name+"TagVarCSV_vertex_time")) tree->SetBranchAddress((name+"TagVarCSV_vertex_time").c_str()          ,TagVarCSV_vertex_time                   );
+      if(variableParser.isToBeStored(name+"TagVarCSV_vertex_timeWeight")) tree->SetBranchAddress((name+"TagVarCSV_vertex_timeWeight").c_str()          ,TagVarCSV_vertex_timeWeight             );
+//$$
       if(variableParser.isToBeStored(name+"TagVarCSV_flightDistance2dVal")) tree->SetBranchAddress((name+"TagVarCSV_flightDistance2dVal").c_str()      ,TagVarCSV_flightDistance2dVal           );
       if(variableParser.isToBeStored(name+"TagVarCSV_flightDistance2dSig")) tree->SetBranchAddress((name+"TagVarCSV_flightDistance2dSig").c_str()      ,TagVarCSV_flightDistance2dSig           );
       if(variableParser.isToBeStored(name+"TagVarCSV_flightDistance3dVal")) tree->SetBranchAddress((name+"TagVarCSV_flightDistance3dVal").c_str()      ,TagVarCSV_flightDistance3dVal           );

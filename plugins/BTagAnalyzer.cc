@@ -1654,6 +1654,12 @@ void BTagAnalyzerT<IPTI,VTX>::analyze(const edm::Event& iEvent, const edm::Event
   }
   //------------------------------------------------------
 
+//$$
+  EventInfo.Event_timeNtk    = 0;
+  EventInfo.Event_timeWeight = 0.;
+  EventInfo.Event_time       = 0.;
+//$$
+
   //------------------------------------------------------
   // Jet info
   //------------------------------------------------------
@@ -1717,7 +1723,6 @@ void BTagAnalyzerT<IPTI,VTX>::processJets(const edm::Handle<PatJetCollection>& j
 					  const std::vector<edm::Handle<PatJetCollection> >& subjetColls,
 					  const edm::Event& iEvent, const edm::EventSetup& iSetup, const int iJetColl)
 {
-
   // matching hit-clusters to TrackingParticles
   edm::Handle<ClusterTPAssociation> clusterToTPMap;
   if( produceJetTrackTruthTree_ )
@@ -1740,6 +1745,14 @@ void BTagAnalyzerT<IPTI,VTX>::processJets(const edm::Handle<PatJetCollection>& j
   JetInfo[iJetColl].nTrkCTagVar = 0;
   JetInfo[iJetColl].nTrkEtaRelCTagVar = 0;
   JetInfo[iJetColl].nLeptons = 0;  
+
+//$$
+  for (int isv = 0; isv < 100; isv++) {
+    JetInfo[iJetColl].TagVar_vertex_timeNtk[isv] = 0;	 
+    JetInfo[iJetColl].TagVar_vertex_time[isv] = 0.;    
+    JetInfo[iJetColl].TagVar_vertex_timeWeight[isv] = 0.;   
+  }
+//$$
 
   //Initialize new test variables for AK4 jets: to be cleaned up in the future
   JetInfo[iJetColl].Jet_trackSip2dSig_AboveBottom_0[JetInfo[iJetColl].nJet] = -19.;
@@ -1867,6 +1880,14 @@ void BTagAnalyzerT<IPTI,VTX>::processJets(const edm::Handle<PatJetCollection>& j
       JetInfo[iJetColl].Jet_jes[JetInfo[iJetColl].nJet]      = ( nJECSets>0 ? pjet->pt()/pjet->correctedJet("Uncorrected").pt() : 1. );
       JetInfo[iJetColl].Jet_residual[JetInfo[iJetColl].nJet] = ( nJECSets>0 ? pjet->pt()/pjet->correctedJet("L3Absolute").pt() : 1. );
       JetInfo[iJetColl].Jet_uncorrpt[JetInfo[iJetColl].nJet] = ( nJECSets>0 ? pjet->correctedJet("Uncorrected").pt() : pjet->pt());
+//$$
+      JetInfo[iJetColl].Jet_timeNtk[JetInfo[iJetColl].nJet] = 0;  
+      JetInfo[iJetColl].Jet_time[JetInfo[iJetColl].nJet] = 0.;  
+      JetInfo[iJetColl].Jet_timeWeight[JetInfo[iJetColl].nJet] = 0.;  
+      JetInfo[iJetColl].TagVarCSV_vertex_timeNtk[JetInfo[iJetColl].nJet] = 0;	 
+      JetInfo[iJetColl].TagVarCSV_vertex_time[JetInfo[iJetColl].nJet] = 0.;    
+      JetInfo[iJetColl].TagVarCSV_vertex_timeWeight[JetInfo[iJetColl].nJet] = 0.;    
+//$$
     }
 
     if( runSubJets_ && iJetColl > 0 )
@@ -2156,7 +2177,7 @@ void BTagAnalyzerT<IPTI,VTX>::processJets(const edm::Handle<PatJetCollection>& j
       }
 
       // track selection
-      if ( (useSelectedTracks_ && pass_cut_trk) ||  !useSelectedTracks_) {
+//$$      if ( (useSelectedTracks_ && pass_cut_trk) ||  !useSelectedTracks_) {
 
         if ( useSelectedTracks_ ) {
           JetInfo[iJetColl].Track_IP2D[JetInfo[iJetColl].nTrack]     = ipTagInfo->impactParameterData()[itt].ip2d.value();
@@ -2218,6 +2239,41 @@ void BTagAnalyzerT<IPTI,VTX>::processJets(const edm::Handle<PatJetCollection>& j
           JetInfo[iJetColl].Track_SV[JetInfo[iJetColl].nTrack] = -1;
           JetInfo[iJetColl].Track_SVweight[JetInfo[iJetColl].nTrack] = 0.;
         }
+
+//$$
+        float Track_time      = ptrack.t0();
+	float Track_timeError = ptrack.covt0t0();
+        float Track_dxy       = ptrack.dxy(pv->position());
+        float Track_dz        = ptrack.dz(pv->position());
+        float Track_pt        = ptrack.pt();
+        float timeweight = Track_pt*Track_pt;
+// Event Time
+        if ( Track_timeError > 0. && abs(Track_time) < 1. 
+	     && abs(Track_dxy) < 0.05 && abs(Track_dz) < 0.10 ) {
+          EventInfo.Event_timeNtk    += 1;
+          EventInfo.Event_timeWeight += timeweight;
+          EventInfo.Event_time       += Track_time * timeweight;
+	}
+// Jet Time
+        if ( Track_timeError > 0. && abs(Track_time) < 1. ) {
+          JetInfo[iJetColl].Jet_timeNtk[JetInfo[iJetColl].nJet]    += 1;
+          JetInfo[iJetColl].Jet_timeWeight[JetInfo[iJetColl].nJet] += timeweight;
+          JetInfo[iJetColl].Jet_time[JetInfo[iJetColl].nJet]       += Track_time * timeweight;
+	}
+// SV Time
+        int isv = JetInfo[iJetColl].Track_SV[JetInfo[iJetColl].nTrack];
+        if ( Track_timeError > 0. && abs(Track_time) < 1. && isv >= 0 ) {
+          JetInfo[iJetColl].TagVarCSV_vertex_timeNtk[JetInfo[iJetColl].nJet]	+= 1;
+          JetInfo[iJetColl].TagVarCSV_vertex_timeWeight[JetInfo[iJetColl].nJet] += timeweight;
+          JetInfo[iJetColl].TagVarCSV_vertex_time[JetInfo[iJetColl].nJet]	+= Track_time * timeweight;
+          JetInfo[iJetColl].TagVar_vertex_timeNtk[JetInfo[iJetColl].nSVTagVar + isv]    += 1;
+          JetInfo[iJetColl].TagVar_vertex_timeWeight[JetInfo[iJetColl].nSVTagVar + isv] += timeweight;
+          JetInfo[iJetColl].TagVar_vertex_time[JetInfo[iJetColl].nSVTagVar + isv]       += Track_time * timeweight;
+	}
+// Track Time
+        JetInfo[iJetColl].Track_time[JetInfo[iJetColl].nTrack]       = Track_time;
+        JetInfo[iJetColl].Track_timeError[JetInfo[iJetColl].nTrack]  = Track_timeError;
+//$$
 
         // check if the track is a V0 decay product candidate
         JetInfo[iJetColl].Track_isfromV0[JetInfo[iJetColl].nTrack] = 0;
@@ -2508,7 +2564,7 @@ void BTagAnalyzerT<IPTI,VTX>::processJets(const edm::Handle<PatJetCollection>& j
         }
 
         ++JetInfo[iJetColl].nTrack;
-      }
+//$$      }
       if ( useSelectedTracks_ ) JetInfo[iJetColl].Jet_ntracks[JetInfo[iJetColl].nJet] = JetInfo[iJetColl].nTrack-JetInfo[iJetColl].Jet_nFirstTrack[JetInfo[iJetColl].nJet];
 
       if ( producePtRelTemplate_ ) {
@@ -2538,6 +2594,17 @@ void BTagAnalyzerT<IPTI,VTX>::processJets(const edm::Handle<PatJetCollection>& j
       }
 
     } //// end loop on tracks
+
+//$$
+// Jet Time
+    if ( JetInfo[iJetColl].Jet_timeNtk[JetInfo[iJetColl].nJet] > 0 ) {
+      JetInfo[iJetColl].Jet_time[JetInfo[iJetColl].nJet] /= JetInfo[iJetColl].Jet_timeWeight[JetInfo[iJetColl].nJet];
+    }
+// SV Time per Jet
+    if ( JetInfo[iJetColl].TagVarCSV_vertex_timeNtk[JetInfo[iJetColl].nJet] > 0 ) {
+      JetInfo[iJetColl].TagVarCSV_vertex_time[JetInfo[iJetColl].nJet] /= JetInfo[iJetColl].TagVarCSV_vertex_timeWeight[JetInfo[iJetColl].nJet];
+    }
+//$$
 
     JetInfo[iJetColl].Jet_nseltracks[JetInfo[iJetColl].nJet] = nseltracks;
 
@@ -3720,6 +3787,43 @@ void BTagAnalyzerT<IPTI,VTX>::processJets(const edm::Handle<PatJetCollection>& j
     ++numjet;
     ++JetInfo[iJetColl].nJet;
   } // end loop on jet
+
+//$$
+// Time informations
+  if ( EventInfo.Event_timeNtk > 0 ) {
+    EventInfo.Event_time /= EventInfo.Event_timeWeight;
+  }
+  else {                 
+    EventInfo.Event_time = -1.;
+  }
+
+  for (int ijet = 0; ijet < JetInfo[iJetColl].nJet; ijet++) {
+    if ( JetInfo[iJetColl].Jet_timeNtk[ijet] > 0 && EventInfo.Event_timeNtk > 0 ) 
+  	 JetInfo[iJetColl].Jet_time[ijet] -= EventInfo.Event_time;
+    else JetInfo[iJetColl].Jet_time[ijet] = -1.;
+
+    if ( JetInfo[iJetColl].TagVarCSV_vertex_timeNtk[ijet] > 0 && EventInfo.Event_timeNtk > 0 ) 
+  	 JetInfo[iJetColl].TagVarCSV_vertex_time[ijet] -= EventInfo.Event_time;
+    else JetInfo[iJetColl].TagVarCSV_vertex_time[ijet] = -1.;
+  }
+
+  for (int isv = 0; isv < JetInfo[iJetColl].nSVTagVar; isv++) {
+    if ( JetInfo[iJetColl].TagVar_vertex_timeNtk[isv] > 0 && EventInfo.Event_timeNtk > 0 ) {
+      JetInfo[iJetColl].TagVar_vertex_time[isv] /= JetInfo[iJetColl].TagVar_vertex_timeWeight[isv];
+      JetInfo[iJetColl].TagVar_vertex_time[isv] -= EventInfo.Event_time;
+    }
+    else JetInfo[iJetColl].TagVar_vertex_time[isv] = -1.;
+  }
+
+  for (int itrack = 0; itrack < JetInfo[iJetColl].nTrack; itrack++) {
+    if ( JetInfo[iJetColl].Track_timeError[itrack] > 0 && 
+         abs(JetInfo[iJetColl].Track_time[itrack]) < 1. &&
+	 EventInfo.Event_timeNtk > 0 ) {
+      JetInfo[iJetColl].Track_time[itrack] -= EventInfo.Event_time;
+    }
+    else JetInfo[iJetColl].Track_time[itrack] = -1.; 
+  }
+//$$
 
   Histos[iJetColl]->hData_All_NJets->Fill( JetInfo[iJetColl].nJet );
   Histos[iJetColl]->hData_NJets->Fill( numjet );

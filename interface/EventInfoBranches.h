@@ -26,6 +26,11 @@ class EventInfoBranches {
     int   LumiBlock;
     float PVz;
     float PVez;
+//$$
+    int   Event_timeNtk;
+    float Event_time;
+    float Event_timeWeight;
+//$$
     float GenPVz;
     float pthat;
     float mcweight;
@@ -196,8 +201,24 @@ class EventInfoBranches {
       if(variableParser.isToBeStored("mcweight")) tree->Branch("mcweight"   , &mcweight   ,  "mcweight/F");
       if(variableParser.isToBeStored("BX")) tree->Branch("BX"         , &BX         ,  "BX/I");
       if(variableParser.isToBeStored("nPV")) tree->Branch("nPV"        , &nPV        ,  "nPV/I");
+
+      if(variableParser.isToBeStored("PV_x")) tree->Branch("PV_x"     , PV_x     , "PV_x[nPV]/F");
+      if(variableParser.isToBeStored("PV_y")) tree->Branch("PV_y"     , PV_y     , "PV_y[nPV]/F");
+      if(variableParser.isToBeStored("PV_z")) tree->Branch("PV_z"     , PV_z     , "PV_z[nPV]/F");
+      if(variableParser.isToBeStored("PV_ex")) tree->Branch("PV_ex"    , PV_ex    , "PV_ex[nPV]/F");
+      if(variableParser.isToBeStored("PV_ey")) tree->Branch("PV_ey"    , PV_ey    , "PV_ey[nPV]/F");
+      if(variableParser.isToBeStored("PV_ez")) tree->Branch("PV_ez"    , PV_ez    , "PV_ez[nPV]/F");
+      if(variableParser.isToBeStored("PV_chi2")) tree->Branch("PV_chi2"  , PV_chi2  , "PV_chi2[nPV]/F");
+      if(variableParser.isToBeStored("PV_ndf")) tree->Branch("PV_ndf"   , PV_ndf   , "PV_ndf[nPV]/F");
+      if(variableParser.isToBeStored("PV_isgood")) tree->Branch("PV_isgood", PV_isgood, "PV_isgood[nPV]/I");
+      if(variableParser.isToBeStored("PV_isfake")) tree->Branch("PV_isfake", PV_isfake, "PV_isfake[nPV]/I");
       if(variableParser.isToBeStored("PVz")) tree->Branch("PVz"        , &PVz        ,  "PVz/F");
       if(variableParser.isToBeStored("PVez")) tree->Branch("PVez"       , &PVez       ,  "PVez/F");
+//$$
+      if(variableParser.isToBeStored("Event_timeNtk")) tree->Branch("Event_timeNtk" , &Event_timeNtk ,  "Event_timeNtk/I");
+      if(variableParser.isToBeStored("Event_time")) tree->Branch("Event_time" , &Event_time ,  "Event_time/F");
+      if(variableParser.isToBeStored("Event_timeWeight")) tree->Branch("Event_timeWeight" , &Event_timeWeight ,  "Event_timeWeight/F");
+//$$
       if(variableParser.isToBeStored("GenPVz")) tree->Branch("GenPVz"     , &GenPVz     ,  "GenPVz/F");
       if(variableParser.isToBeStored("rho")) tree->Branch("rho"        , &rho        ,  "rho/F");
       if(variableParser.isToBeStored("nPUtrue")) tree->Branch("nPUtrue"      , &nPUtrue     , "nPUtrue/F");
@@ -236,9 +257,9 @@ class EventInfoBranches {
       if(variableParser.isToBeStored("BHadron_SVx")) tree->Branch("BHadron_SVx",          BHadron_SVx         ,"BHadron_SVx[nBHadrons]/F");
       if(variableParser.isToBeStored("BHadron_SVy")) tree->Branch("BHadron_SVy",          BHadron_SVy         ,"BHadron_SVy[nBHadrons]/F");
       if(variableParser.isToBeStored("BHadron_SVz")) tree->Branch("BHadron_SVz",          BHadron_SVz         ,"BHadron_SVz[nBHadrons]/F");
-      if(variableParser.isToBeStored("BHadron_nCharged")) tree->Branch("BHadron_nCharged",     BHadron_nCharged    ,"BHadron_nCharged[nBHadrons]/I");
       if(variableParser.isToBeStored("BHadron_DHadron1")) tree->Branch("BHadron_DHadron1",     BHadron_DHadron1    ,"BHadron_DHadron1[nBHadrons]/I");
       if(variableParser.isToBeStored("BHadron_DHadron2")) tree->Branch("BHadron_DHadron2",     BHadron_DHadron2    ,"BHadron_DHadron2[nBHadrons]/I");
+      if(variableParser.isToBeStored("BHadron_nCharged")) tree->Branch("BHadron_nCharged",     BHadron_nCharged    ,"BHadron_nCharged[nBHadrons]/I");
 
       if(variableParser.isToBeStored("nDHadrons")) tree->Branch("nDHadrons",    &nDHadrons    ,"nDHadrons/I");
       if(variableParser.isToBeStored("nDaughters")) tree->Branch("nDaughters",   &nDaughters   ,"nDaughters/I");
@@ -288,17 +309,6 @@ class EventInfoBranches {
       if(variableParser.isToBeStored("GenV0_SVy")) tree->Branch("GenV0_SVy",       GenV0_SVy      ,"GenV0_SVy[nGenV0]/F");
       if(variableParser.isToBeStored("GenV0_SVz")) tree->Branch("GenV0_SVz",       GenV0_SVz      ,"GenV0_SVz[nGenV0]/F");
       if(variableParser.isToBeStored("GenV0_nCharged")) tree->Branch("GenV0_nCharged",  GenV0_nCharged ,"GenV0_nCharged[nGenV0]/I");
-
-      if(variableParser.isToBeStored("PV_x")) tree->Branch("PV_x"     , PV_x     , "PV_x[nPV]/F");
-      if(variableParser.isToBeStored("PV_y")) tree->Branch("PV_y"     , PV_y     , "PV_y[nPV]/F");
-      if(variableParser.isToBeStored("PV_z")) tree->Branch("PV_z"     , PV_z     , "PV_z[nPV]/F");
-      if(variableParser.isToBeStored("PV_ex")) tree->Branch("PV_ex"    , PV_ex    , "PV_ex[nPV]/F");
-      if(variableParser.isToBeStored("PV_ey")) tree->Branch("PV_ey"    , PV_ey    , "PV_ey[nPV]/F");
-      if(variableParser.isToBeStored("PV_ez")) tree->Branch("PV_ez"    , PV_ez    , "PV_ez[nPV]/F");
-      if(variableParser.isToBeStored("PV_chi2")) tree->Branch("PV_chi2"  , PV_chi2  , "PV_chi2[nPV]/F");
-      if(variableParser.isToBeStored("PV_ndf")) tree->Branch("PV_ndf"   , PV_ndf   , "PV_ndf[nPV]/F");
-      if(variableParser.isToBeStored("PV_isgood")) tree->Branch("PV_isgood", PV_isgood, "PV_isgood[nPV]/I");
-      if(variableParser.isToBeStored("PV_isfake")) tree->Branch("PV_isfake", PV_isfake, "PV_isfake[nPV]/I");
 
       if(variableParser.isToBeStored("nTrkAll")) tree->Branch("nTrkAll",          &nTrkAll,         "nTrkAll/I"                  );
       if(variableParser.isToBeStored("TrkAll_d0")) tree->Branch("TrkAll_d0",        TrkAll_d0,        "TrkAll_d0[nTrkAll]/F"       );
@@ -376,6 +386,11 @@ class EventInfoBranches {
       if(variableParser.isToBeStored("nPV")) tree->SetBranchAddress("nPV"        , &nPV        );
       if(variableParser.isToBeStored("PVz")) tree->SetBranchAddress("PVz"        , &PVz        );
       if(variableParser.isToBeStored("PVez")) tree->SetBranchAddress("PVez"       , &PVez       );
+//$$
+      if(variableParser.isToBeStored("Event_timeNtk")) tree->SetBranchAddress("Event_timeNtk" , &Event_timeNtk );
+      if(variableParser.isToBeStored("Event_time")) tree->SetBranchAddress("Event_time" , &Event_time );
+      if(variableParser.isToBeStored("Event_timeWeight")) tree->SetBranchAddress("Event_timeWeight" , &Event_timeWeight );
+//$$
       if(variableParser.isToBeStored("GenPVz")) tree->SetBranchAddress("GenPVz"     , &GenPVz     );
       if(variableParser.isToBeStored("rho")) tree->SetBranchAddress("rho"        , &rho        );
       if(variableParser.isToBeStored("nPUtrue")) tree->SetBranchAddress("nPUtrue"      , &nPUtrue     );
@@ -414,9 +429,9 @@ class EventInfoBranches {
       if(variableParser.isToBeStored("BHadron_SVx")) tree->SetBranchAddress("BHadron_SVx",          BHadron_SVx         );
       if(variableParser.isToBeStored("BHadron_SVy")) tree->SetBranchAddress("BHadron_SVy",          BHadron_SVy         );
       if(variableParser.isToBeStored("BHadron_SVz")) tree->SetBranchAddress("BHadron_SVz",          BHadron_SVz         );
+      if(variableParser.isToBeStored("BHadron_DHadron1")) tree->SetBranchAddress("BHadron_DHadron1",	 BHadron_DHadron1    );
+      if(variableParser.isToBeStored("BHadron_DHadron2")) tree->SetBranchAddress("BHadron_DHadron2",	 BHadron_DHadron2    );
       if(variableParser.isToBeStored("BHadron_nCharged")) tree->SetBranchAddress("BHadron_nCharged",     BHadron_nCharged    );
-      if(variableParser.isToBeStored("BHadron_DHadron1")) tree->SetBranchAddress("BHadron_DHadron1",     BHadron_DHadron1    );
-      if(variableParser.isToBeStored("BHadron_DHadron2")) tree->SetBranchAddress("BHadron_DHadron2",     BHadron_DHadron2    );
 
       if(variableParser.isToBeStored("nDHadrons")) tree->SetBranchAddress("nDHadrons",    &nDHadrons    );
       if(variableParser.isToBeStored("nDaughters")) tree->SetBranchAddress("nDaughters",   &nDaughters   );
